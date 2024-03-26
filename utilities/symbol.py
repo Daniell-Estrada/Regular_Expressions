@@ -7,7 +7,7 @@ class Symbol:
         self.ord = ord(value)
 
     def is_operator(self) -> bool:
-        return re.fullmatch(r"[.()|*+?]", self.value)
+        return bool(re.fullmatch(r"[.()|*+?]", self.value))
 
     def __repr__(self) -> str:
         return self.value

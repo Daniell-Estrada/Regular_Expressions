@@ -68,3 +68,6 @@ class Node:
 
     def position_is_null(self):
         return self.position < 0
+
+    def is_leaf(self):
+        return not (self.left or self.right)

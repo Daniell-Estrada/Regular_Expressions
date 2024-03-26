@@ -26,7 +26,7 @@ class InfixPostFix:
         data = self.add_concat(data)
 
         for s in data:
-            if isinstance(s.value, int) or s.value.isalpha() or s.value == "ε":
+            if s.value.isalnum() or s.value == "ε":
                 postfix.append(s)
 
             elif s.value == "(":
