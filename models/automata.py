@@ -1,5 +1,7 @@
 from abc import ABC
 
+from graphviz import Graph
+
 from models.tree import Tree
 from utilities.state import State
 from utilities.symbol import Symbol
@@ -9,8 +11,7 @@ from utilities.transition import Transition
 class Automata(ABC):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__()
-        data = {"alpha": {}, "states": [],
-                "i_state": None, "f_states": [], "trans": []}
+        data = {"alpha": {}, "states": [], "i_state": None, "f_states": [], "trans": []}
 
         data.update(zip(data.keys(), args))
         data.update(kwargs)
@@ -42,32 +43,41 @@ class Automata(ABC):
     def i_state(self, value):
         setattr(self, "__i_state", value)
 
-    def convert_tran(self):
-        data = {}
-
-        for t in self.trans:
-            orgn, symb, dest = t.json().values()
-
-            if orgn in data:
-                if symb in data[orgn]:
-                    data[orgn][symb] = {dest, *data[orgn][symb]}
-
-                else:
-                    data[orgn][symb] = {dest}
-
-            else:
-                data[orgn] = {symb: {dest}}
-
-        return data
+    def reorganize(self):
+        self.states.sort(key=lambda s: s.id)
+        for i, s in enumerate(self.states):
+            s.id = f"S{i}"
 
     def json(self) -> dict:
-        states = set([f"S{i}" for i in self.states])
-        alphabet = sorted([s.value for s in self.alpha.values()])
+        self.reorganize()
 
         return {
-            "Q": states,
-            "S": alphabet,
-            "D": self.convert_tran(),
-            "S0": f"S{self.i_state}",
-            "F": [f"S{i}" for i in self.f_states],
+            "Q": self.states,
+            "S": self.alpha,
+            "D": self.trans,
+            "S0": self.i_state,
+            "F": self.f_states,
         }
+
+    def get_automata(self, regex: str):
+        return None
+
+    def draw(self):
+        try:
+            automata = Graph("Automata", format="svg")
+            automata.attr(rankdir="LR")
+
+            for state in self.states:
+                automata.node(
+                    f"{state.id}",
+                    f"{state.id}",
+                    shape="circle" if state not in self.f_states else "doublecircle",
+                )
+
+            for t in self.trans:
+                automata.edge(f"{t.origin.id}", f"{t.destiny.id}", label=t.symbol.value)
+        
+            automata.render(f'/tmp/automata_{hash(self)}', format="png", view=False)
+        
+        except Exception as e:
+            print(e)

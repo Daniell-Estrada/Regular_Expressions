@@ -1,20 +1,17 @@
-import re as re
+"""
+This is the main file of the project. It is the entry point of the project.
+"""
 
-import regex as rx
-
-# base: \w+[+*?]?[+?]?
-# \w+[+*?]?[+?]?
-# (\w+[+*?]?[+?]?)*((\((\w+[+*?]?[+?]?|(?R))+\))+[+*?]?[+?]?)*
-
-# vesrion with parentesis
-# all = (\w+[+*?]?[+?]?)*((\((\w+[+*?]?[+?]?|(?R))+\))+[+*?]?[+?]?)+?(\w+[+*?]?[+?]?)*
-
-m = rx.compile(r"(\w+|(\((?R)+\)))[+*?]?[+?]?(\|?(?R))?+").fullmatch("*ab")
-
-print(m)
-
-# \w+(\+|\*|\?)?[+?]?
-# ((\w+[+*?]?[+?]?)|((\((\w+[+*?]?[+?]?|(?R))+\))+[+*?]?[+?]?))+?
-# ((\w+[+*?]?[+?]?(\|?(?R))?)|((\((?R)+\))+[+*?]?[+?]?)(\|?(?R))?)+
+from views.app import App
 
 
+def main() -> None:
+    try:
+        App().mainloop()
+
+    except Exception as e:
+        print(e)
+
+
+if __name__ == "__main__":
+    main()

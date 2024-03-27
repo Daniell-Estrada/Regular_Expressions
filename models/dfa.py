@@ -1,4 +1,5 @@
 from collections import deque
+
 from multipledispatch import dispatch
 
 from models.automata import Automata
@@ -52,7 +53,7 @@ class DFA(Automata):
 
         for s in current:
             for t in nfa.trans:
-                if s.id == t.origin.id and t.symbol.value == symbol.value:
+                if t.origin.id == s.id and t.symbol.value == symbol.value:
                     if t.destiny not in next_states:
                         next_states.append(t.destiny)
 
@@ -82,11 +83,11 @@ class DFA(Automata):
         return e_states
 
     def config(self):
-        current_states = self.e_closure(self.nfa, [self.nfa.i_state])
-        base_states = [current_states]
-        unverified_states = [current_states]
+        curr_states = self.e_closure(self.nfa, [self.nfa.i_state])
+        base_states = [curr_states]
+        unfd_states = [curr_states]
 
-        if self.nfa.f_state in current_states:
+        if self.nfa.f_state in curr_states:
             self.i_state = State(0, 3)
             self.f_states.append(self.i_state)
         else:
@@ -94,17 +95,18 @@ class DFA(Automata):
 
         self.states.append(self.i_state)
 
-        while unverified_states:
-            current_states = unverified_states.pop()
+        while unfd_states:
+            current = unfd_states.pop() or curr_states
 
             for v in self.alpha.values():
-                move_res = self.move(self.nfa, current_states, v)
+                move_res = self.move(self.nfa, current, v)
                 move_res = self.e_closure(self.nfa, move_res)
+                move_res.sort(key=lambda x: x.id)
 
                 if move_res not in base_states:
                     if move_res:
                         base_states.append(move_res)
-                        unverified_states.append(move_res)
+                        unfd_states.append(move_res)
 
                         new_state = State(
                             len(base_states) - 1,
@@ -115,14 +117,14 @@ class DFA(Automata):
                             self.f_states.append(new_state)
 
                         self.states.append(new_state)
-                        i_s = base_states.index(current_states)
+                        i_s = base_states.index(current)
                         f_s = base_states.index(move_res)
                         tran = Transition(
                             self.states[i_s], v, self.states[f_s])
 
                         self.trans.append(tran)
                 else:
-                    i_s = base_states.index(current_states)
+                    i_s = base_states.index(current)
                     f_s = base_states.index(move_res)
                     tran = Transition(self.states[i_s], v, self.states[f_s])
 
@@ -130,29 +132,34 @@ class DFA(Automata):
                         self.trans.append(tran)
 
     def minimize(self):
-        accept_states = set(self.f_states)
-        reject_states = set(self.states).difference(accept_states)
+        accept_states = frozenset(self.f_states)
+        reject_states = frozenset(self.states).difference(accept_states)
 
-        partitions = [accept_states, reject_states]
+        partitions = set([accept_states, reject_states])
         worklist = deque([accept_states, reject_states])
-
+        
         while worklist:
             partition = worklist.popleft()
 
             for a in self.alpha.values():
-                trans = {}
+                mapping = {}
 
                 for state in partition:
                     next_state = self.move_state(state, a.value)
-                    sub = trans.get(next_state, set())
-                    sub.add(state)
-                    trans[next_state] = sub
+                    sub_part = mapping.get(next_state, None)
 
-                for t in trans.values():
-                    if len(t) < len(partition):
-                        partitions.remove(partition)
-                        partitions.append(t)
-                        worklist.append(t)
+                    if not sub_part:
+                        sub_part = set()
+                        mapping[next_state] = sub_part
+
+                    sub_part.add(state)
+
+                for sub_part in mapping.values():
+                    if len(sub_part) < len(partition):
+                        if partition in partitions:
+                            partitions.remove(frozenset(partition))
+                        partitions.add(frozenset(sub_part))
+                        worklist.append(sub_part)
 
         state_map = {}
         start_state = self.i_state
@@ -176,8 +183,8 @@ class DFA(Automata):
                 minimized.add_state(rep, is_accept)
 
                 for a in self.alpha.values():
-                    next_state = self.move_state(rep, a.value)
-                    mapped_state = state_map.get(next_state)
+                    map_state = self.move_state(rep, a.value)
+                    mapped_state = state_map.get(map_state)
                     minimized.add_transition(rep, a, mapped_state)
 
         return minimized

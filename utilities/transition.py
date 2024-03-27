@@ -29,6 +29,9 @@ class Transition:
             )
         return False
 
+    def __repr__(self) -> str:
+        return f"{self.origin.id} - {self.symbol.value} -> {self.destiny.id}"
+
     def json(self):
         return {
             "origin": f"S{self.origin.id}",

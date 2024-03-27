@@ -54,7 +54,7 @@ class Thompson:
 
             if node.symbol.value in "*+":
                 back = Transition(c_states[f_pos], self.epsilon, c_states[i_pos])
-                trans.extend([back])
+                trans.append(back)
 
             if node.symbol.value == "+":
                 o_new_state, f_new_state = nfa.i_state, nfa.f_state
@@ -64,11 +64,20 @@ class Thompson:
         left = self.subset_construction(node.left)
         right = self.subset_construction(node.right)
 
-        if node.symbol.value == "|":
-            states_left = left.states
-            states_right = right.states
+        states_left = left.states
+        states_right = right.states
 
-            states = [o_new_state, *states_left, *states_right, f_new_state]
+        states = [*states_left, *states_right]
+
+        i_pos_r = self._pos_child(states_right, Type.INITIAL)
+        f_pos_l = self._pos_child(states_left, Type.FINAL, -1)
+
+        if node.symbol.value == "|":
+            states.insert(0, o_new_state)
+            states.append(f_new_state)
+
+            i_pos_l = self._pos_child(states_left, Type.INITIAL)
+            f_pos_r = self._pos_child(states_right, Type.FINAL, -1)
 
             for v in states_left:
                 if v.typ in [Type.INITIAL, Type.FINAL]:
@@ -80,17 +89,11 @@ class Thompson:
 
             trans = [*left.trans, *right.trans]
 
-            i_pos_left = self._pos_child(states_left, Type.INITIAL)
-            f_pos_left = self._pos_child(states_left, Type.FINAL, -1)
+            begin_or_p1 = self._set_trans(o_new_state, states_left[i_pos_l])
+            begin_or_p2 = self._set_trans(o_new_state, states_right[i_pos_r])
 
-            i_pos_right = self._pos_child(states_right, Type.INITIAL)
-            f_pos_right = self._pos_child(states_right, Type.FINAL, -1)
-
-            begin_or_p1 = self._set_trans(o_new_state, states_left[i_pos_left])
-            begin_or_p2 = self._set_trans(o_new_state, states_right[i_pos_right])
-
-            end_or_p1 = self._set_trans(states_left[f_pos_left], f_new_state)
-            end_or_p2 = self._set_trans(states_right[f_pos_right], f_new_state)
+            end_or_p1 = self._set_trans(states_left[f_pos_l], f_new_state)
+            end_or_p2 = self._set_trans(states_right[f_pos_r], f_new_state)
 
             trans.extend([begin_or_p1, begin_or_p2, end_or_p1, end_or_p2])
 
@@ -98,13 +101,6 @@ class Thompson:
 
         first_state = left.i_state
         last_state = right.f_state
-
-        states_left = left.states
-        states_right = right.states
-        states = [*states_left, *states_right]
-
-        i_pos = self._pos_child(states_right, Type.INITIAL)
-        f_pos = self._pos_child(states_left, Type.FINAL, -1)
 
         for v in states_left:
             if v.typ == Type.FINAL:
@@ -114,7 +110,7 @@ class Thompson:
             if v.typ == Type.INITIAL:
                 v.typ = Type.TRANS
 
-        dot = self._set_trans(states_left[f_pos], states_right[i_pos])
+        dot = self._set_trans(states_left[f_pos_l], states_right[i_pos_r])
         trans = [*left.trans, *right.trans, dot]
 
         return NFA(self.alpha, states, first_state, last_state, trans)
