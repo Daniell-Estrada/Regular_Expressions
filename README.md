@@ -21,7 +21,7 @@ Este proyecto tiene como objetivo visualizar Autómatas Finitos No Deterministas
 1. Necesario Python 3.x.
 2. Instala los paquetes requeridos:
    ```bash
-   pip install -r requeriments.txt
+   pip install -r requirements.txt
    ```
 3. Ejecuta `main.py` para iniciar la aplicación.
 
