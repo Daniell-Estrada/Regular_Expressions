@@ -147,17 +147,11 @@ class Automata(ABC):
             automata.edge("initial", f"{self.i_state.id}", label="Start")
 
             for state in self.states:
-                new_attr = {"fillcollor": "aqua"}
+                is_fs = state.id in [s.id for s in self.f_states]
 
-                if state in self.f_states:
-                    new_attr["fillcollor"] = "springgreen"
-                    new_attr["color"] = "black"
-
-                if state == self.i_state:
-                    new_attr["fillcollor"] = "aqua"
-                    new_attr["color"] = "black"
-
-                automata.node(f"{state.id}", **new_attr)
+                automata.node(
+                    f"{state.id}", shape="doublecircle" if is_fs else "circle"
+                )
 
             for t in self.trans:
                 automata.edge(
@@ -165,6 +159,6 @@ class Automata(ABC):
                 )
 
             automata.render(f"/tmp/automata_{hash(self)}", format="png", view=False)
-
+            return hash(self)
         except Exception as e:
             print(e)

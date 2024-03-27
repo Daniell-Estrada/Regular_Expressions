@@ -90,9 +90,8 @@ class AutomataController:
         Returns:
             None
         """
-        regex = regex.strip()
 
-        if regex != self.regex:
+        if regex.strip() != self.regex.strip():
             self.get_automata(regex)
 
         if aut_type == "NFA":
@@ -103,10 +102,6 @@ class AutomataController:
     def draw_automata(self):
         """
         Draws the automata and saves the image.
-
-        Returns:
-            None
         """
-        self.automata.draw()
-        aut_id = hash(self.automata)
+        aut_id = self.automata.draw()
         self.view.img_automata = f"/tmp/automata_{aut_id}.png"
