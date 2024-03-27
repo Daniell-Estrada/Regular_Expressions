@@ -147,10 +147,17 @@ class Automata(ABC):
             automata.edge("initial", f"{self.i_state.id}", label="Start")
 
             for state in self.states:
-                automata.node(
-                    name=f"{state.id}",
-                    shape="circle" if state not in self.f_states else "doublecircle",
-                )
+                new_attr = {"fillcollor": "aqua"}
+
+                if state in self.f_states:
+                    new_attr["fillcollor"] = "springgreen"
+                    new_attr["color"] = "black"
+
+                if state == self.i_state:
+                    new_attr["fillcollor"] = "aqua"
+                    new_attr["color"] = "black"
+
+                automata.node(f"{state.id}", **new_attr)
 
             for t in self.trans:
                 automata.edge(
