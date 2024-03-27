@@ -11,18 +11,17 @@ Este proyecto tiene como objetivo visualizar Autómatas Finitos No Deterministas
 
 ## Estructura del Proyecto
 - `main.py`: Punto de entrada principal de la aplicación.
-- `model.py`: Contiene la clase abstracta `Automata` (base para NFA y DFA).
+- `models`: Contiene la clase abstracta `Automata` (base para NFA y DFA).
 - `nfa.py`: Implementa el NFA utilizando el algoritmo de Thompson.
 - `dfa.py`: Construye el DFA a partir del NFA.
-- `view.py`: Maneja la interfaz gráfica de usuario (GUI) utilizando `customtkinter`.
-- `database.py`: Gestiona la base de datos SQLite para almacenar información de los autómatas.
-- `graphviz_utils.py`: Genera la visualización gráfica utilizando `graphviz`.
+- `views`: Maneja la interfaz gráfica de usuario (GUI) utilizando `customtkinter`.
+- `automata_interface.py`: Gestiona la base de datos SQLite para almacenar información de los autómatas.
 
 ## Instalación
-1. Instala Python 3.x.
+1. Necesario Python 3.x.
 2. Instala los paquetes requeridos:
    ```bash
-   pip install customtkinter graphviz sqlite3
+   pip install -r requeriments.txt
    ```
 3. Ejecuta `main.py` para iniciar la aplicación.
 
