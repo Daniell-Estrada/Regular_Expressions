@@ -3,6 +3,15 @@ from utilities.symbol import Symbol
 
 
 class Transition:
+    """
+    Represents a transition between two states in an automaton.
+
+    Attributes:
+        origin (State): The origin state of the transition.
+        symbol (Symbol): The symbol triggering the transition.
+        destiny (State): The destiny state of the transition.
+    """
+
     def __init__(self, origin: State, symbol: Symbol, destiny: State):
         self._origin: State = origin
         self._symbol: Symbol = symbol
@@ -29,12 +38,17 @@ class Transition:
             )
         return False
 
-    def __repr__(self) -> str:
-        return f"{self.origin.id} - {self.symbol.value} -> {self.destiny.id}"
-
     def json(self):
         return {
-            "origin": f"S{self.origin.id}",
+            "origin": self.origin.id,
             "symbol": self.symbol.value,
-            "destiny": f"S{self.destiny.id}",
+            "destiny": self.destiny.id,
         }
+
+    @staticmethod
+    def from_json(data: dict):
+        return Transition(
+            State(data["origin"], 1),
+            Symbol(data["symbol"]),
+            State(data["destiny"], 3),
+        )

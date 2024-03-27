@@ -10,6 +10,49 @@ from utilities.transition import Transition
 
 
 class DFA(Automata):
+    """
+    Represents a Deterministic Finite Automaton (DFA).
+
+    Inherits from the Automata class.
+
+    Attributes:
+        alpha (dict[int, Symbol]): The alphabet of the DFA.
+        nfa (NFA): The corresponding NFA.
+        i_state (State): The initial state of the DFA.
+        f_states (list[State]): The list of final states of the DFA.
+        states (list[State]): The list of all states in the DFA.
+        trans (list[Transition]): The list of transitions in the DFA.
+
+    Methods:
+        __init__(self, alpha: dict[int, Symbol])
+            Initializes the DFA with the given alphabet.
+
+        __init__(self, alpha: dict[int, Symbol], nfa: NFA)
+            Initializes the DFA with the given alphabet and corresponding NFA.
+
+        add_state(self, state: State, is_final: bool = False)
+            Adds a state to the DFA.
+
+        add_transition(self, origin: State, symbol: Symbol, destiny: State)
+            Adds a transition to the DFA.
+
+        move(self, nfa: NFA, current: list[State], symbol: Symbol) -> list[State]
+            Computes the next states given the current states and a symbol.
+
+        move_state(self, state: State, v: str) -> State | None
+            Computes the next state given a state and a symbol.
+
+        e_closure(self, nfa: NFA, current: list[State]) -> list[State]
+            Computes the epsilon closure of a set of states.
+
+        config(self)
+            Configures the DFA by computing its states and transitions.
+
+        minimize(self) -> DFA
+            Minimizes the DFA by merging equivalent states.
+
+    """
+
     @dispatch(dict)
     def __init__(self, alpha: dict[int, Symbol]):
         super().__init__(alpha=alpha)
@@ -119,8 +162,7 @@ class DFA(Automata):
                         self.states.append(new_state)
                         i_s = base_states.index(current)
                         f_s = base_states.index(move_res)
-                        tran = Transition(
-                            self.states[i_s], v, self.states[f_s])
+                        tran = Transition(self.states[i_s], v, self.states[f_s])
 
                         self.trans.append(tran)
                 else:
@@ -137,7 +179,7 @@ class DFA(Automata):
 
         partitions = set([accept_states, reject_states])
         worklist = deque([accept_states, reject_states])
-        
+
         while worklist:
             partition = worklist.popleft()
 

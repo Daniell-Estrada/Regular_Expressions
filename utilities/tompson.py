@@ -6,18 +6,67 @@ from utilities.transition import Transition
 
 
 class Thompson:
+    """
+    Represents a Thompson construction for building NFAs from regular expressions.
+
+    Attributes:
+        alpha (dict[int, Symbol]): The alphabet of the regular expressions.
+        num_states (int): The number of states in the NFA.
+        epsilon (Symbol): The epsilon symbol used in the NFA.
+
+    Methods:
+        _set_trans(o_state: State, f_state: State) -> Transition:
+            Sets a transition from the origin state to the final state with epsilon symbol.
+
+        _pos_child(states: list[State], typ: Type, _v=0) -> int:
+            Returns the position of the child state with the specified type.
+
+        subset_construction(node: Node) -> NFA:
+            Performs the subset construction algorithm to build an NFA from a regular expression node.
+    """
+
     def __init__(self, alpha: dict[int, Symbol]) -> None:
+        """
+        Initializes a Thompson object.
+
+        Args: alpha (dict[int, Symbol]): The alphabet of the regular expressions.
+        """
         self.alpha = alpha
         self.num_states = 0
         self.epsilon = Symbol("ε")
 
     def _set_trans(self, o_state: State, f_state: State) -> Transition:
+        """
+        Sets a transition from the origin state to the final state with epsilon symbol.
+
+        Args:
+            o_state (State): The origin state of the transition.
+            f_state (State): The final state of the transition.
+
+        Returns: Transition: The created transition.
+        """
         return Transition(o_state, self.epsilon, f_state)
 
     def _pos_child(self, states: list[State], typ: Type, _v=0) -> int:
+        """
+        Returns the position of the child state with the specified type.
+
+        Args:
+            states (list[State]): The list of states to search in.
+            typ (Type): The type of the child state to find.
+            _v (int, optional): The default position value if the child state is not found. Defaults to 0.
+
+        Returns: int: The position of the child state, or the default position value if not found.
+        """
         return next((i for i, v in enumerate(states) if v.typ == typ), _v)
 
-    def subset_construction(self, node: Node):
+    def subset_construction(self, node: Node) -> NFA:
+        """
+        Performs the subset construction algorithm to build an NFA from a regular expression node.
+
+        Args: node (Node): The root node of the regular expression.
+        Returns: NFA: The constructed NFA.
+        """
         o_new_state = State(self.num_states, 1)
         f_new_state = State(self.num_states + 1, 3)
 

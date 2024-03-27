@@ -3,6 +3,12 @@ from utilities.state import State
 
 
 class NFA(Automata):
+    """
+    Represents a Non-Deterministic Finite Automaton (NFA).
+
+    Inherits from the Automata class.
+    """
+
     def __init__(self, *args, **kwargs):
         args = list(args)
         temp = kwargs.get("f_states") or args[-2]
@@ -12,4 +18,10 @@ class NFA(Automata):
 
     @property
     def f_state(self) -> State:
+        """
+        Returns the initial/final state of the NFA.
+
+        Returns:
+            State: The initial/final state of the NFA.
+        """
         return self.f_states[0]

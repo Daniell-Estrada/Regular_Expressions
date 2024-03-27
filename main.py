@@ -1,11 +1,10 @@
-"""
-This is the main file of the project. It is the entry point of the project.
-"""
-
 from views.app import App
 
 
 def main() -> None:
+    """
+    Entry point of the program.
+    """
     try:
         App().mainloop()
 

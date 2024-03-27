@@ -1,9 +1,31 @@
-import tkinter as tk
-
 import customtkinter as ctk
+from PIL import Image
 
 from utilities.validate import validate_regex
 from views.alert import Alert
+
+
+class AutomataView(ctk.CTkFrame):
+    """
+    The AutomataView class represents the view component of the automata application.
+    It provides the user interface for interacting with the automata functionality.
+    """
+
+    def __init__(self, master: ctk.CTk) -> None:
+        super().__init__(master)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        self.controller = None
+        self.entry_regex = None
+        self.toplevel_window = None
+        self.img_automata: str
+        self.content = None
+
+        self.header()
+        self.body()
+
+    # Rest of the code...
 
 
 class AutomataView(ctk.CTkFrame):
@@ -14,9 +36,8 @@ class AutomataView(ctk.CTkFrame):
 
         self.controller = None
         self.entry_regex = None
-        self.img_automata = None
         self.toplevel_window = None
-        self.img_automata = None
+        self.img_automata: str
         self.content = None
 
         self.header()
@@ -49,8 +70,10 @@ class AutomataView(ctk.CTkFrame):
         btn_dfa.pack(side="left", padx=(5, 10), pady=10)
 
     def body(self):
-        self.content = ctk.CTkFrame(self)
+        self.content = ctk.CTkFrame(self, fg_color="grey17")
         self.content.pack(side="bottom", fill="both", expand=True, padx=2, pady=(2, 3))
+        self.content.grid_columnconfigure(0, weight=1)
+        self.content.grid_rowconfigure(0, weight=1)
 
     def on_return(self, event):
         regex = event.widget.get()
@@ -78,11 +101,19 @@ class AutomataView(ctk.CTkFrame):
                 widget.destroy()
 
         if self.img_automata:
-            size = self.img_automata.size
-            img_aut = ctk.CTkImage(self.img_automata, size=size)
-
-            contenetor = ctk.CTkLabel(self.content, text="", image=img_aut) 
-            contenetor.pack(side='top', fill='both', expand=True)
+            img = Image.open(self.img_automata)
+            size = (self.content.winfo_width(), self.content.winfo_height())
+            img = ctk.CTkImage(dark_image=Image.open(self.img_automata), size=size)
+            lable = ctk.CTkLabel(
+                self.content,
+                text="",
+                image=img,
+                width=size[0],
+                height=size[1],
+            )
+            lable.pack(side="left", fill="both", expand=True)
+            # img_aut = ImagAutomata(self.master, self.content)
+            # img_aut.set_image(self.img_automata)
 
     def open_toplevel(self, message: str):
         if self.toplevel_window:

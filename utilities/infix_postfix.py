@@ -4,21 +4,49 @@ from utilities.symbol import Symbol
 
 
 class InfixPostFix:
+    """
+    Converts an infix regular expression to postfix notation.
+    """
+
     def __init__(self, regex: str):
+        """
+        Initializes an instance of the InfixPostFix class.
+
+        Args:
+            regex (str): The infix regular expression to convert.
+        """
         self._regex = regex
 
-        epsilon = Symbol('ε')
+        epsilon = Symbol("ε")
         self.stack: dict[int, Symbol] = {epsilon.ord: epsilon}
 
     @property
     def regex(self):
+        """
+        Gets or sets the infix regular expression.
+
+        Returns:
+            str: The infix regular expression.
+        """
         return self._regex
 
     @regex.setter
     def regex(self, value: str):
+        """
+        Sets the infix regular expression.
+
+        Args:
+            value (str): The infix regular expression to set.
+        """
         self._regex = value
 
     def convert(self):
+        """
+        Converts the infix regular expression to postfix notation.
+
+        Returns:
+            list[Symbol]: The postfix notation of the regular expression.
+        """
         stack: list[Symbol] = []
         postfix: list[Symbol] = []
 
@@ -39,7 +67,7 @@ class InfixPostFix:
                 stack.pop()
 
             else:
-                while (stack and self.pre(s) <= self.pre(stack[-1])):
+                while stack and self.pre(s) <= self.pre(stack[-1]):
                     postfix.append(stack.pop())
                 stack.append(s)
 
@@ -49,6 +77,15 @@ class InfixPostFix:
         return postfix
 
     def convert_symbols(self, regex: str) -> list[Symbol]:
+        """
+        Converts the characters in the infix regular expression to Symbol objects.
+
+        Args:
+            regex (str): The infix regular expression.
+
+        Returns:
+            list[Symbol]: The list of Symbol objects representing the infix regular expression.
+        """
         infix = []
 
         for c in regex:
@@ -61,6 +98,15 @@ class InfixPostFix:
         return infix
 
     def add_concat(self, data: list[Symbol]) -> list[Symbol]:
+        """
+        Adds the concatenation operator (.) to the infix regular expression.
+
+        Args:
+            data (list[Symbol]): The list of Symbol objects representing the infix regular expression.
+
+        Returns:
+            list[Symbol]: The list of Symbol objects with the concatenation operator added.
+        """
         concat = Symbol(".")
         temp = deepcopy(data)
 
@@ -81,4 +127,13 @@ class InfixPostFix:
         return temp
 
     def pre(self, symbol: Symbol) -> int:
-        return dict(zip('*+?|.', [3, 3, 3, 2, 1])).get(symbol.value, -1)
+        """
+        Returns the precedence of the given symbol.
+
+        Args:
+            symbol (Symbol): The symbol to get the precedence for.
+
+        Returns:
+            int: The precedence value.
+        """
+        return dict(zip("*+?|.", [3, 3, 3, 2, 1])).get(symbol.value, -1)

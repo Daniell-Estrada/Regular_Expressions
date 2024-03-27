@@ -7,6 +7,10 @@ from views.automata_view import AutomataView
 
 
 class App(ctk.CTk):
+    """
+    The main application class for the Regex to NFA and DFA tool.
+    """
+
     def __init__(self) -> None:
         super().__init__()
 
@@ -22,6 +26,15 @@ class App(ctk.CTk):
             Alert(self, str(e))
 
     def configure(self, **kwargs):
+        """
+        Configures the application window with the specified settings.
+
+        Args:
+            **kwargs: Additional keyword arguments for configuring the window.
+
+        Returns:
+            The configuration settings for the window.
+        """
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
         self.title("Regex to NFA and DFA")
