@@ -67,10 +67,10 @@ class Thompson:
         Args: node (Node): The root node of the regular expression.
         Returns: NFA: The constructed NFA.
         """
-        o_new_state = State(self.num_states, 1)
-        f_new_state = State(self.num_states + 1, 3)
 
         if node.is_leaf() or node.symbol.value in "*?|":
+            o_new_state = State(self.num_states, 1)
+            f_new_state = State(self.num_states + 1, 3)
             self.num_states += 2
 
         if node.is_leaf():

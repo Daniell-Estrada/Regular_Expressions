@@ -58,7 +58,7 @@ class AutomataController:
                 hexs = (self.nfa.to_hex(), self.dfa.to_hex())
                 self.connection.insert_automata((regex, *hexs))
         except Exception as e:
-            self.view.open_toplevel("Error", str(e))
+            self.view.open_toplevel(f"Error: {e}")
 
     def base_automata(self, regex: str):
         """

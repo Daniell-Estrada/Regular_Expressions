@@ -3,6 +3,12 @@
 ## Descripción
 Este proyecto tiene como objetivo visualizar Autómatas Finitos No Deterministas (NFA) y Autómatas Finitos Deterministas (DFA) basados en una expresión regular dada. El proyecto sigue la arquitectura Modelo-Vista-Controlador (MVC) y utiliza el algoritmo de Thompson para construir el NFA. Además, se emplean las bibliotecas `customtkinter`, `graphviz` y `sqlite3`.
 
+## Basado en el Repositorio Original
+
+Este proyecto se basa en el repositorio MaIsabelSolano/UVG_DLP_Regex-NFA-DFA. Utilicé su código como punto de partida para crear un visualizador de expresiones regulares (regex) a autómatas finitos deterministas (DFA) o no deterministas (NFA) utilizando Python.
+
+Agradezco al los autores por proporcionar una base sólida para mi proyecto y por compartir su trabajo con la comunidad.
+
 ## Características
 - Ingresar una expresión regular.
 - Generar el NFA y el DFA según la preferencia.

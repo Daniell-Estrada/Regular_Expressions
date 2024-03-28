@@ -6,29 +6,6 @@ from views.alert import Alert
 
 
 class AutomataView(ctk.CTkFrame):
-    """
-    The AutomataView class represents the view component of the automata application.
-    It provides the user interface for interacting with the automata functionality.
-    """
-
-    def __init__(self, master: ctk.CTk) -> None:
-        super().__init__(master)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-
-        self.controller = None
-        self.entry_regex = None
-        self.toplevel_window = None
-        self.img_automata: str
-        self.content = None
-
-        self.header()
-        self.body()
-
-    # Rest of the code...
-
-
-class AutomataView(ctk.CTkFrame):
     def __init__(self, master: ctk.CTk) -> None:
         super().__init__(master)
         self.grid_columnconfigure(0, weight=1)
